@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuteness & Beauty Meter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffb3ba, #ffdfba, #ffffba);
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Floating hearts background */
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .heart-float {
+            position: absolute;
+            font-size: 2em;
+            color: #ff69b4;
+            animation: float 6s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff69b4;
+            font-size: 2.5em;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .heart { color: #ff1493; font-size: 2em; animation: pulse 1.5s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        button {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s;
+            animation: wiggle 2s infinite;
+        }
+        @keyframes wiggle {
+            0%, 7% { transform: rotateZ(0); }
+            15% { transform: rotateZ(-15deg); }
+            20% { transform: rotateZ(10deg); }
+            25% { transform: rotateZ(-10deg); }
+            30% { transform: rotateZ(6deg); }
+            35% { transform: rotateZ(-4deg); }
+            40%, 100% { transform: rotateZ(0); }
+        }
+        button:hover { background: #ff1493; transform: scale(1.05); }
+        
+        .meter {
+            width: 100%;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #ff69b4; }
+            to { box-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493; }
+        }
+        .fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff69b4, #ff1493, #ffb3ba);
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        .fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .fill.bad {
+            background: linear-gradient(to right, #ff0000, #cc0000, #990000); /* Red for bad phase */
+        }
+        .fill.bad::after {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+        
+        #progress {
+            font-size: 1.5em;
+            margin: 10px 0;
+            animation: bounceText 0.5s infinite alternate;
+        }
+        @keyframes bounceText {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+        
+        #measuring { display: none; }
+        #surprise { display: none; animation: zoomIn 1s ease; }
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        #shayri {
+            font-style: italic;
+            font-size: 1.2em;
+            margin: 20px 0;
+            min-height: 60px; /* Space for typing */
+            position: relative;
+        }
+        #shayri::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .confetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff69b4;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #ff69b4;
+            border-radius: 50%;
+            animation: burst 1s ease-out;
+        }
+        @keyframes burst {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(10); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="hearts"></div>
+    <div class="container">
+        <h1>Cuteness & Beauty Meter <i class="fas fa-heart heart"></i></h1>
+        <p>Ready to discover how incredibly cute and beautiful you are? Click below to start the magic! ✨</p>
+        
+        <button onclick="startMeasuring()">Start Measuring! 💖</button>
+        
+        <div id="measuring">
+            <p id="progress">Initializing scan... 0% 😊</p>
+            <div class="meter">
+                <div class="fill" id="fill"></div>
+            </div>
+            <div class="particles" id="particles"></div>
+        </div>
+        
+        <div id="surprise">
+            <h2>Results: You're 1000% Perfect! <i class="fas fa-star"></i></h2>
+            <p>My dearest Ankita, the scan is complete—you're 1000% the epitome of cuteness and beauty. Your smile could melt hearts, your eyes shine brighter than stars, and your presence is pure joy. I love you more than words can say. 💕</p>
+            <p id="shayri"></p>
+            <p>Will you be my forever? ❤️</p>
+            <p>Love, Shiv</p>
+            <div class="confetti" id="confetti"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Generate floating hearts
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 10; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-float';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 6 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+        createHearts();
+        
+        function startMeasuring() {
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('measuring').style.display = 'block';
+            
+            let progress = 0;
+            const fill = document.getElementById('fill');
+            const progressText = document.getElementById('progress');
+            const particles = document.getElementById('particles');
+            
+            const badMessages = [
+                "Scanning cuteness... 0% 😊",
+                "Measuring beauty... 50% 😕",
+                "Analyzing charm... 100% - Ouch, that's low 🙁",
+                "Calculating perfection... 200% - Not great 😟",
+                "Finalizing results... 500% - System overload? 😢"
+            ];
+            
+            const goodMessages = [
+                "System Error Detected! Recalibrating... 🔧",
+                "Error corrected! Measuring beauty... 750% ✨",
+                "Analyzing charm... 1000% 😍"
+            ];
+            
+            let phase = 'bad'; // Start with bad phase
+            
+            const interval = setInterval(() => {
+                progress += 50; // Increase by 50% every 250ms
+                fill.style.width = (progress / 10) + '%'; // Scale to 100% width at 1000%
+                
+                if (phase === 'bad' && progress <= 500) {
+                    fill.classList.add('bad'); // Red tint for bad phase
+                    const msgIndex = Math.floor(progress / 100);
+                    if (msgIndex < badMessages.length) {
+                        progressText.innerText = badMessages[msgIndex];
+                    }
+                } else if (progress === 550) { // At 550%, switch to error correction with gap
+                    phase = 'good';
+                    fill.classList.remove('bad'); // Remove red tint
+                    progressText.innerText = goodMessages[0]; // System Error
+                    // Add 3-second gap here
+                    setTimeout(() => {
+                        // Resume after gap
+                        const resumeInterval = setInterval(() => {
+                            progress += 50;
+                            fill.style.width = (progress / 10) + '%';
+                            const goodIndex = Math.floor((progress - 500) / 250) + 1;
+                            if (goodIndex < goodMessages.length) {
+                                progressText.innerText = goodMessages[goodIndex];
+                            }
+                            // Add particle burst every 250% in good phase
+                            if ((progress - 500) % 250 === 0 && progress > 500) {
+                                for (let i = 0; i < 10; i++) {
+                                    const particle = document.createElement('div');
+                                    particle.className = 'particle';
+                                    particle.style.left = Math.random() * 100 + '%';
+                                    particle.style.top = Math.random() * 100 + '%';
+                                    particles.appendChild(particle);
+                                    setTimeout(() => particle.remove(), 1000);
+                                }
+                            }
+                            if (progress >= 1000) {
+                                clearInterval(resumeInterval);
+                                setTimeout(showSurprise, 500);
+                            }
+                        }, 250);
+                    }, 3000); // 3-second gap
+                    clearInterval(interval); // Stop the main interval during gap
+                }
+            }, 250);
+        }
+        
+        function showSurprise() {
+            document.getElementById('measuring').style.display = 'none';
+            document.getElementById('surprise').style.display = 'block';
+            // Typewriter effect for shayri
+            const shayriText = "तुम्हारी मुस्कान में है जादू, तुम्हारी आँखों में है रूहानी,\nमैं तुमसे प्यार करता हूँ, मेरी जान Ankita, तुम हो मेरी कहानी। 💕";
+            const shayriElement = document.getElementById('shayri');
+            let i = 0;
+            const typeInterval = setInterval(() => {
+                shayriElement.innerText = shayriText.slice(0, i);
+                i++;
+                if (i > shayriText.length) {
+                    clearInterval(typeInterval);
+                    shayriElement.style.animation = 'none'; // Stop blinking cursor
+                }
+            }, 100); // Speed of typing
+            
+            // Confetti effect
+            for (let i = 0; i < 50; i++) {
+                let confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = ['#ff69b4', '#ff1493', '#ffffba', '#ffb3ba'][Math.floor(Math.random()*4)];
+                document.getElementById('confetti').appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+            // Optional: Play a cute song
+            const audio = new Audio('cute-song.mp3');
+            audio.play();
+        }
+    </script>
+</body>
+</html>
